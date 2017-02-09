@@ -20,21 +20,24 @@
 <body class="en" data-duration="360">
   <main>
     <section class="slide welcome highlight">
-      <h1><img class="logo-stacked" src="framework/img/llc-logo-stacked-white.png" alt="Ladies Learning Code logo" style="font-family: cursive "> Welcome! <iframe style="float: right;" src="http://free.timeanddate.com/clock/i5kzdjtx/n256/tlca/fn17/fcfff/tc000/bas5/bac909/pa10/tt0/tw0/tm1/ta1/tb4" frameborder="0" width="200" height="64"></iframe></h1>
+      <h1 style="font-family:fantasy;font-size:35px;text-transform: capitalize;color: #b109aa;;letter-spacing: 2px;">
+        <img class="logo-stacked" src="framework/img/llc-logo-stacked-white.png" alt="Ladies Learning Code logo" > Welcome to Intro to JavaScript Workshop!
+        <canvas id="canvas" width="100" height="100" style="display: inline-block;float:right; background-color: #a91593;margin: 0 auto;border-radius: 50%;"></canvas> 
+      </h1>
 
       <div class="instructions">
         <!-- ADD WIFI INFO HERE -->
-        <h2 style="background-color:#EECD86; text-align: center;margin:2px;">1) Get Connected</h2>
+        <h2 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:25px;text-transform: capitalize;color: black;letter-spacing: 2px;">1) Get Connected</h2>
         <span><strong>Wifi:</strong><em>wifi network</em></span>
         <span><strong>Password:</strong><em>wifi password</em></span>
         <hr>
         <div style="background-color: #C3C3E5">
-          <h3 style="background-color:#EECD86; font-family: 'Quicksand',sans-serif;color: #b109aa;text-transform: uppercase;font-size: 30px;">2) visit <a href="https://soheilhm.github.io/llc-js-workshop/slides.html" >https://soheilhm.github.io/llc-js-workshop/slides.html</a> to follow along with the slides</h3>
+          <h3 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:25px;text-transform: capitalize;color: black;letter-spacing: 2px;">2) visit <a style="text-decoration: none;font-style: italic" href="https://soheilhm.github.io/llc-js-workshop/slides.html" >https://soheilhm.github.io/llc-js-workshop/slides.html</a></h3>
           <p style="color:black;">The program below is written is JavaScript. See what it does!!</p>
           <p data-height="300" data-theme-id="dark" data-slug-hash="acAgx" data-default-tab="result" data-user="jackrugile" data-embed-version="2" data-pen-title="Canvas Fireworks" class="codepen">See the Pen <a href="https://codepen.io/jackrugile/pen/acAgx/">Canvas Fireworks</a> by Jack Rugile (<a href="http://codepen.io/jackrugile">@jackrugile</a>) on <a href="http://codepen.io">CodePen</a>.</p>
           <script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
         <div>
-        <h2 style="background-color:#EECD86;">3) Download</h2>
+        <h2 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:25px;text-transform: capitalize;color: black;letter-spacing: 2px;">3) Download</h2>
         <ol class="downloads">
           <li>Learner files (zip file): <a href="https://github.com/soheilhm/llc-js-workshop/archive/master.zip">click here to download</a>
             <ul>
@@ -51,6 +54,87 @@
         <p class="left">Content by <a href="http://medium.com/@pearlchen">Pearl Chen</a> and <a href="http://christinatruong.com">Christina Truong</a> for <a prefix="cc: http://creativecommons.org/ns#" href="http://ladieslearningcode.com" property="cc:attributionName" rel="cc:attributionURL">Ladies Learning Code</a></p>
         <p class="right">Use the left <span class="arrow">&#8592;</span> and right <span class="arrow">&#8594;</span> arrow keys to navigate</p>
       </footer>
+      <script>
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      var radius = canvas.height / 2;
+      ctx.translate(radius, radius);
+      radius = radius * 0.90
+      setInterval(drawClock, 1000);
+
+      function drawClock() {
+        drawFace(ctx, radius);
+        drawNumbers(ctx, radius);
+        drawTime(ctx, radius);
+      }
+
+      function drawFace(ctx, radius) {
+        var grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, 2*Math.PI);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
+        grad.addColorStop(0, '#333');
+        grad.addColorStop(0.5, 'white');
+        grad.addColorStop(1, '#333');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = radius*0.1;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
+        ctx.fillStyle = '#333';
+        ctx.fill();
+      }
+
+      function drawNumbers(ctx, radius) {
+        var ang;
+        var num;
+        ctx.font = radius*0.15 + "px arial";
+        ctx.textBaseline="middle";
+        ctx.textAlign="center";
+        for(num = 1; num < 13; num++){
+          ang = num * Math.PI / 6;
+          ctx.rotate(ang);
+          ctx.translate(0, -radius*0.85);
+          ctx.rotate(-ang);
+          ctx.fillText(num.toString(), 0, 0);
+          ctx.rotate(ang);
+          ctx.translate(0, radius*0.85);
+          ctx.rotate(-ang);
+        }
+      }
+
+      function drawTime(ctx, radius){
+          var now = new Date();
+          var hour = now.getHours();
+          var minute = now.getMinutes();
+          var second = now.getSeconds();
+          //hour
+          hour=hour%12;
+          hour=(hour*Math.PI/6)+
+          (minute*Math.PI/(6*60))+
+          (second*Math.PI/(360*60));
+          drawHand(ctx, hour, radius*0.5, radius*0.07);
+          //minute
+          minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
+          drawHand(ctx, minute, radius*0.8, radius*0.07);
+          // second
+          second=(second*Math.PI/30);
+          drawHand(ctx, second, radius*0.9, radius*0.02);
+      }
+
+      function drawHand(ctx, pos, length, width) {
+          ctx.beginPath();
+          ctx.lineWidth = width;
+          ctx.lineCap = "round";
+          ctx.moveTo(0,0);
+          ctx.rotate(pos);
+          ctx.lineTo(0, -length);
+          ctx.stroke();
+          ctx.rotate(-pos);
+      }
+      </script>      
     </section>
 
     <section class="slide intro">
